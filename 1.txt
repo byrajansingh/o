@@ -295,3 +295,203 @@ sed -n "$2, $3 p" $1
 Execution and Output:
 $ sh eleventh.sh file1 2 5
 content of the file1 between 2nd and 5th line should be displayed
+
+12. Write an awkscript that accepts date argument in the form of dd-mm-# yyyy and displays it in the form month, day and year. The script should # check the validity of the argument and in the case of
+error, display # a suitable message.
+BEGIN { FS="-";
+printf " Day Month Year\n";
+}
+{
+printf " \n The date is %d-%d-%d\n ", $1,$2,$3;
+if (( $1 >=1 && $1 <=31) && ($2 >=1 && $2 <=12)){
+printf "The date is valid\t:"; if($2==1)
+mon="Jan";
+else if($2==2)
+mon="Feb"; else if($2==3)
+mon="Mar"; else if($2==4)
+mon="Apr"; else if($2==5)
+mon="May"; else if($2==6)
+mon="Jun"; else if($2==7)
+mon="Jul"; else if($2==8)
+mon="Aug"; else if($2==9)
+mon="Sep"; else if($2==10)
+mon="Oct"; else if($2==11)
+mon="Nov"; else if($2==12)
+mon="Dec";
+printf "Date is %s-%d-%d", mon,$1,$3;
+}
+else
+printf "date is invalid\n";
+system ("exit");
+}
+Execution and Output:
+$ cat dates.data
+14-08-1969
+39-06-1973
+18-04-2004
+05-08-2006
+17-08-1969
+32-11-2010
+$ awk -f twelveth.awk dates.data
+Day Month Year
+The date is 14-8-1969
+The date is valid :Date is Aug-14-1969
+The date is 39-6-1973
+date is invalid
+
+13. Write an awk script to delete duplicated lines from a text file. The order of the original lines must remain unchanged.
+BEGIN {
+printf " Program starts\n" ;
+}
+{
+if ( data[$0]++ == 0 )
+line[++count]=$0;
+}
+END {
+for (i=1; i<= count; i++)
+printf "\n" line[i]; printf " \n\n program ends";
+printf "\n"
+}
+Execution and Output:
+Input file: file with repeated lines say --- duplicates.txt
+$ awk -f thirteen.awk duplicqtelines.txt
+Program starts
+--------------
+unique lines ---------------
+
+14 Write an awkscript to find out total number of books sold in each
+discipline as well as total books sold, using associate array like
+table as given below.
+a. Computer science 34
+b. Commerce 67
+c. Management 80
+d. Journalism 43
+BEGIN {
+printf " Total number of books each category\n";
+}
+{
+b[$1] += $2;
+}
+END {
+for(item in b) {
+printf "%s %s %d \n", item , "=", b[item]; total += b[item];
+}
+printf "%s %s %s \n", "total books", "=",total;
+}
+Execution and Output:
+$ cat Books.data ComputerScience 34
+Commerce 67
+Management 80
+Journalism 43
+
+16. Write a program to copy a file into another using system calls.
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h> void main() {
+char buf;
+int fd_one, fd_two;
+fd_one = open("bigfile.txt", O_RDONLY);
+if (fd_one == -1) {
+printf("Error opening first_file\n");
+close(fd_one);
+return;
+}
+fd_two = open("second_file", O_WRONLY | O_CREAT,
+S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+while(read(fd_one, &buf, 1)) {
+write(fd_two, &buf, 1);
+}
+printf("\nSuccessful copy \n");
+close(fd_one);
+close(fd_two);
+}
+Execution and Output:
+$ cc sixteen.c
+$ ./a.out
+Successful copy
+
+17. Write a program using system call: create, open, write, close, stat, fstat, lseek.
+C Program for open() system call
+#include<stdio.h>
+#include<fcntl.h>
+#include<errno.h>
+extern int errno;
+int main() {
+// if file does not have in directory
+// then file foo.txt is created.
+int fd = open("exposure.txt", O_RDONLY | O_CREAT);
+printf("fd = %d \n", fd);
+if (fd == -1) {
+// print which type of error have in a code
+printf("\n Error Number % d\n", errno);
+// print program detail "Success or failure"
+perror("Program");
+}
+return 0;
+}
+Execution and Output:
+$ cc seventeen_open.c
+$ ./a.out
+fd = -1
+Error Number 13
+Program: Permission denied
+
+
+18. Write a program to create a child process and allow the parent to display “parent” and the child to
+display “child” on the screen.
+#include <stdio.h>
+#include <sys/wait.h> /* contains prototype for wait */
+int main(void) {
+int pid;
+int status;
+printf("Hello World!\n");
+pid = fork( );
+if(pid == -1) { /* check for error in fork */
+perror("bad fork");
+exit(1);
+}
+if (pid == 0)
+printf("I am the child process.\n");
+else {
+wait(&status); /* parent waits for child to finish */
+printf("I am the parent process.\n");
+}
+}
+Execution and Output:
+$ cc parent_child.c
+$ ./a.out
+Hello World!
+I am the child process.
+I am the parent process.
+
+19. Write a program to create a Zombie process.
+#include <stdio.h>
+#include <stdlib.h> // for exit()
+#include <unistd.h> // for fork(), and sleep()
+int main() {
+// Creating a Child Process
+int pid = fork();
+if (pid > 0) // True for Parent Process
+sleep(60);
+else if (pid == 0) { // True for Child Process
+printf("Zombie Process Created Successfully!");
+exit(0);
+} else // True when Child Process creation fails
+printf("Sorry! Child Process cannot be created...");
+return 0;
+}
+Execution and Output:
+$ cc zombie_prg.c
+$ ./a.out
+Zombie Process Created Successfully!
+
+
+
+
+
+
+
+
+
+
+
